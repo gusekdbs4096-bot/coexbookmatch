@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>9월 신간도서 알아보기</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div id="app">
+
+  <!-- ============ 인트로 화면 ============ -->
+  <section id="screen-intro" class="screen active">
+    <div class="logo-mark">
+      <div class="book-chip"></div>
+      <div class="book-chip b2"></div>
+    </div>
+    <h1 class="title-main">9월 신간도서 알아보기</h1>
+    <p class="title-sub">카드를 뒤집어 같은 책 표지를 찾아보세요.<br/>레벨이 오를수록 더 많은 카드를 기억해야 합니다.</p>
+    <div class="intro-features">
+      <span>LEVEL 1-10</span>
+      <span>2 / 3 / 4 MATCH</span>
+      <span>사내 전자도서관 도서 수록</span>
+    </div>
+    <button id="btn-play" class="btn btn-primary">PLAY</button>
+  </section>
+
+  <!-- ============ 게임 화면 ============ -->
+  <section id="screen-game" class="screen">
+    <div class="hud">
+      <div class="hud-block">
+        <span class="hud-label">LIVES</span>
+        <span id="hud-lives" class="hearts-row">
+          <span class="heart" data-i="0">&#9829;</span>
+          <span class="heart" data-i="1">&#9829;</span>
+          <span class="heart" data-i="2">&#9829;</span>
+        </span>
+      </div>
+      <div class="hud-block">
+        <span class="hud-label">LEVEL</span>
+        <span id="hud-level" class="hud-value">LEVEL 01</span>
+      </div>
+      <div class="hud-block">
+        <span class="hud-label">MATCH</span>
+        <span id="hud-match" class="hud-value match-badge">2 MATCH</span>
+      </div>
+      <div class="hud-block">
+        <span class="hud-label">TIME</span>
+        <span id="hud-time" class="hud-value time-value">00:45</span>
+      </div>
+      <div class="hud-remaining">
+        <span class="dot"></span>
+        <span id="hud-remaining-count">2</span>
+        <span class="remaining-text">권 남음</span>
+      </div>
+    </div>
+
+    <div class="board-wrap">
+      <div id="board" class="board"></div>
+    </div>
+
+    <div id="toast-layer" class="toast-layer"></div>
+    <div id="preview-banner" class="preview-banner">
+      <span>표지를 기억하세요!</span>
+      <span id="preview-count" class="preview-count">4</span>
+    </div>
+  </section>
+
+  <!-- ============ ALL CLEAR 화면 ============ -->
+  <section id="screen-allclear" class="screen">
+    <h1 class="allclear-title">ALL CLEAR!</h1>
+    <p class="allclear-sub">10개 레벨을 모두 완료했습니다. 수고하셨어요!</p>
+
+    <h2 class="books-section-title">게임에서 만난 책들</h2>
+    <p class="books-section-desc">방금 카드에서 본 표지들, 전자도서관에서 실제로 만나보세요.</p>
+    <div id="book-gallery" class="book-gallery"></div>
+
+    <div class="allclear-actions">
+      <button id="btn-play-again" class="btn btn-primary">다시 플레이</button>
+    </div>
+  </section>
+
+</div>
+
+<!-- ============ 레벨 시작 오버레이 (책 소개 포함, 반드시 확인해야 진행) ============ -->
+<div id="overlay-level-intro" class="overlay">
+  <div class="overlay-card overlay-card-wide">
+    <div class="level-intro-badge">GET READY</div>
+    <h2 id="level-intro-num" class="level-intro-num">LEVEL 01</h2>
+    <p id="level-intro-desc" class="level-intro-desc"></p>
+    <div class="level-intro-books-label">이번 레벨에 등장하는 책</div>
+    <div id="level-intro-books" class="level-intro-books"></div>
+    <p class="level-intro-hint">시작하면 카드가 잠깐 공개됩니다. 표지를 잘 기억해두세요!</p>
+    <button id="btn-level-start" class="btn btn-primary btn-wide">START</button>
+  </div>
+</div>
+
+<!-- ============ 표지 확대 보기 (라이트박스) ============ -->
+<div id="overlay-cover-preview" class="overlay overlay-top">
+  <div class="overlay-card cover-preview-card">
+    <button id="btn-close-cover-preview" class="cover-preview-close" aria-label="닫기">&times;</button>
+    <div id="cover-preview-image" class="cover-preview-image"></div>
+    <div id="cover-preview-title" class="cover-preview-title"></div>
+    <div id="cover-preview-meta" class="cover-preview-meta"></div>
+    <div id="cover-preview-tagline" class="cover-preview-tagline"></div>
+  </div>
+</div>
+
+<!-- ============ 레벨 클리어 오버레이 ============ -->
+<div id="overlay-clear" class="overlay">
+  <div class="overlay-card">
+    <h2 class="clear-title">LEVEL CLEAR!</h2>
+    <p class="clear-sub">잘하셨어요! 다음 레벨로 이동할 수 있어요.</p>
+    <div class="clear-stats">
+      <div class="stat-box">
+        <div class="stat-label">CLEAR TIME</div>
+        <div id="clear-time" class="stat-value">00:00</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">FLIPS</div>
+        <div id="clear-flips" class="stat-value">0</div>
+      </div>
+    </div>
+    <button id="btn-next-level" class="btn btn-primary">NEXT LEVEL</button>
+  </div>
+</div>
+
+<!-- ============ 게임 오버 오버레이 (하트 소진) ============ -->
+<div id="overlay-gameover" class="overlay">
+  <div class="overlay-card">
+    <h2 class="clear-title" style="color:var(--bad)">GAME OVER</h2>
+    <p class="clear-sub">목숨을 모두 사용했어요. 처음부터 다시 도전해보세요!</p>
+    <div class="clear-stats">
+      <div class="stat-box">
+        <div class="stat-label">REACHED</div>
+        <div id="gameover-level" class="stat-value">LEVEL 01</div>
+      </div>
+    </div>
+    <button id="btn-gameover-restart" class="btn btn-primary btn-wide">처음부터 다시하기</button>
+    <a id="link-gameover-library" class="btn btn-ghost btn-wide btn-stacked" target="_blank" rel="noopener noreferrer" href="#">중도포기하고 책 읽기</a>
+  </div>
+</div>
+
+<!-- ============ 시간 초과 오버레이 ============ -->
+<div id="overlay-timeout" class="overlay">
+  <div class="overlay-card">
+    <h2 class="clear-title" style="color:var(--bad)">TIME OVER</h2>
+    <p class="clear-sub">시간이 모두 지났어요. 다시 도전해보세요!</p>
+    <button id="btn-retry" class="btn btn-primary btn-wide">RETRY</button>
+    <a id="link-timeout-library" class="btn btn-ghost btn-wide btn-stacked" target="_blank" rel="noopener noreferrer" href="#">중도포기하고 책 읽기</a>
+  </div>
+</div>
+
+<script src="data/books.js"></script>
+<script src="data/levels.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
